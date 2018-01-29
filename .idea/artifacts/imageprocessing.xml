@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="imageprocessing">
+    <output-path>$PROJECT_DIR$/out/artifacts/imageprocessing</output-path>
+    <root id="archive" name="imageprocessing.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/out/META-INF/MANIFEST.MF" />
+      </element>
+    </root>
+  </artifact>
+</component>
