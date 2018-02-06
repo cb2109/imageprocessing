@@ -10,16 +10,18 @@ import java.awt.image.BufferedImage;
  */
 public class GreyscaleTransformation implements ImageTransformation {
     @Override
-    public void transform(BufferedImage image) {
+    public BufferedImage transform(BufferedImage image) {
         int width = image.getWidth();
         int height = image.getHeight();
+        BufferedImage output = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 int color = image.getRGB(x, y);
                 int greyScaleColor = greyScalePixel(color);
-                image.setRGB(x, y, greyScaleColor);
+                output.setRGB(x, y, greyScaleColor);
             }
         }
+        return output;
     }
 
     /**

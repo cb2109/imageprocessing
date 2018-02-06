@@ -9,9 +9,11 @@ import java.util.ArrayDeque;
  */
 public class TransformationSet extends ArrayDeque<ImageTransformation> {
 
-    public void runChain(BufferedImage image) {
+    public BufferedImage runChain(BufferedImage image) {
+        BufferedImage output = image;
         for (ImageTransformation transform : this) {
-            transform.transform(image);
+            output = transform.transform(image);
         }
+        return output;
     }
 }

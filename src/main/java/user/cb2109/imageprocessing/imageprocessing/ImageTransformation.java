@@ -8,5 +8,5 @@ import java.awt.image.BufferedImage;
  */
 public interface ImageTransformation {
 
-    void transform(BufferedImage image);
+    BufferedImage transform(BufferedImage image);
 }
