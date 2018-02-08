@@ -7,7 +7,7 @@ import java.util.ArrayDeque;
  * Author: Christopher Bates
  * Date: 31/01/2018
  */
-public class TransformationSet extends ArrayDeque<ImageTransformation> {
+public class ImageTransformationSet extends ArrayDeque<ImageTransformation> {
 
     public BufferedImage runChain(BufferedImage image) {
         BufferedImage output = image;

@@ -1,4 +1,4 @@
-package user.cb2109.imageprocessing.imageprocessing.transformations;
+package user.cb2109.imageprocessing.imageprocessing.imagetransformations;
 
 /**
  * Author: Christopher Bates

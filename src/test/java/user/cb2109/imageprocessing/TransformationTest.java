@@ -3,10 +3,10 @@ package user.cb2109.imageprocessing;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import user.cb2109.imageprocessing.imageprocessing.TransformationSet;
-import user.cb2109.imageprocessing.imageprocessing.transformations.GaussianSmoothingTransformation;
-import user.cb2109.imageprocessing.imageprocessing.transformations.GreyscaleTransformation;
-import user.cb2109.imageprocessing.imageprocessing.transformations.RobertCrossEdgeTransformation;
+import user.cb2109.imageprocessing.imageprocessing.ImageTransformationSet;
+import user.cb2109.imageprocessing.imageprocessing.imagetransformations.GaussianSmoothingTransformation;
+import user.cb2109.imageprocessing.imageprocessing.imagetransformations.GreyscaleTransformation;
+import user.cb2109.imageprocessing.imageprocessing.imagetransformations.RobertCrossEdgeTransformation;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -66,7 +66,7 @@ public class TransformationTest {
 
     @Test
     public void blackAndWhiteBill() {
-        TransformationSet set = new TransformationSet();
+        ImageTransformationSet set = new ImageTransformationSet();
         set.add(new GreyscaleTransformation());
         BufferedImage output = set.runChain(this.imgBill);
         outputs.put("blackAndWhiteBill.jpg", output);
@@ -74,7 +74,7 @@ public class TransformationTest {
 
     @Test
     public void blackAndWhiteCamera() {
-        TransformationSet set = new TransformationSet();
+        ImageTransformationSet set = new ImageTransformationSet();
         set.add(new GreyscaleTransformation());
         BufferedImage output = set.runChain(this.imgCamera);
         outputs.put("blackAndWhiteCamera.jpg", output);
@@ -82,7 +82,7 @@ public class TransformationTest {
 
     @Test
     public void gaussianSmoothedBill() {
-        TransformationSet set = new TransformationSet();
+        ImageTransformationSet set = new ImageTransformationSet();
         set.add(new GreyscaleTransformation());
         set.add(new GaussianSmoothingTransformation());
         BufferedImage output = set.runChain(this.imgBill);
@@ -91,7 +91,7 @@ public class TransformationTest {
 
     @Test
     public void gaussianSmoothedCamera() {
-        TransformationSet set = new TransformationSet();
+        ImageTransformationSet set = new ImageTransformationSet();
         set.add(new GreyscaleTransformation());
         set.add(new GaussianSmoothingTransformation());
         BufferedImage output = set.runChain(this.imgCamera);
@@ -100,7 +100,7 @@ public class TransformationTest {
 
     @Test
     public void edgeAdjustedCamera() {
-        TransformationSet set = new TransformationSet();
+        ImageTransformationSet set = new ImageTransformationSet();
         set.add(new GreyscaleTransformation());
         set.add(new GaussianSmoothingTransformation());
         set.add(new RobertCrossEdgeTransformation());
@@ -110,7 +110,7 @@ public class TransformationTest {
 
     @Test
     public void edgeAdjustedBill() {
-        TransformationSet set = new TransformationSet();
+        ImageTransformationSet set = new ImageTransformationSet();
         set.add(new GreyscaleTransformation());
         set.add(new GaussianSmoothingTransformation());
         set.add(new RobertCrossEdgeTransformation());
