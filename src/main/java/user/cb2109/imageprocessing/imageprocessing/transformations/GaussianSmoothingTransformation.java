@@ -1,7 +1,6 @@
 package user.cb2109.imageprocessing.imageprocessing.transformations;
 
 import java.awt.image.BufferedImage;
-import java.util.Arrays;
 
 /**
  * Author: Christopher Bates
@@ -9,35 +8,43 @@ import java.util.Arrays;
  */
 public class GaussianSmoothingTransformation extends ConvolutionTransformation {
 
-    // standard gaussian kernel for Standard deviation 1
-    private final int[][] kernel = new int[][]{
-            {1,  4,  7,  4, 1},
-            {4, 16, 26, 16, 4},
-            {7, 26, 41, 26, 7},
-            {1,  4,  7,  4, 1},
-            {4, 16, 26, 16, 4}
-    };
+    private double[][] normalizedKernel;
 
-    private float[][] normalizedKernel;
+    public GaussianSmoothingTransformation() {
+        this(5, 1f);
+    }
 
     /*
-     * although we could precompute the normalized kernel, this gives us more
-     * freedom to change the kernel easily and also allows me to understand the
-     * process for building a kernel and how Gaussian transform works
+     * Compute the normalized Gaussian convolution kernel from the size and standard deviation
+     * The larger the kernel the more pixels will be taken into consideration when "blurring"
+     * The larger the standard deviation, the more edge pixels will be taken into account when
+     * creating the final image.
      */
-    public GaussianSmoothingTransformation() {
-        // calculate the total value of all ints in the kernel
-        int kernelSize = kernel.length;
-        int kernelSum = 0;
-        for (int[] row : kernel) {
-            kernelSum += Arrays.stream(row).sum();
+    public GaussianSmoothingTransformation(int kernelSize, double standardDeviation) {
+        if (kernelSize < 3 || kernelSize % 2 == 0) {
+            throw new IllegalArgumentException("Gaussian kernel size must be an odd number greater 1");
+        }
+        if (standardDeviation < 0) {
+            throw new IllegalArgumentException("Standard deviation must be positive");
         }
 
-        // create a normalized kernel so that the sum is 1
-        normalizedKernel = new float[kernelSize][kernelSize];
-        for (int x = 0; x < kernelSize; x++) {
-            for (int y = 0; y < kernelSize; y++) {
-                normalizedKernel[x][y] = ((float) kernel[x][y]) / kernelSum;
+        int maxDistFromCenterOfKernel = ((kernelSize - 1) / 2) + 1;
+        normalizedKernel = new double[kernelSize][kernelSize];
+        double twoVariance = 2 * standardDeviation * standardDeviation;
+
+        // constant that ensures that all points on the kernel add up to 1
+        double normalizingConstant = Math.PI * twoVariance;
+        for (int i = 0; i < kernelSize; i++) {
+            for (int j = 0; j < kernelSize; j++) {
+                int iDist = ((i + 1) - maxDistFromCenterOfKernel);
+                int jDist = ((j + 1) - maxDistFromCenterOfKernel);
+
+                /*
+                 * this is the distance between the point in the gaussian filter and center of the kernel
+                 * adjusted for the given variance
+                 */
+                double exponent = -((iDist * iDist) + (jDist * jDist)) / twoVariance;
+                normalizedKernel[i][j] = Math.exp(exponent) / normalizingConstant;
             }
         }
     }
@@ -57,17 +64,17 @@ public class GaussianSmoothingTransformation extends ConvolutionTransformation {
 
         int kernelWidth = normalizedKernel.length;
         int kernelHeight = normalizedKernel[0].length;
-        float convolutedPixelValue = 0;
+        double convolutedPixelValue = 0;
         // sum across each element in the kernel
         for (int i = 0; i < kernelWidth; i++) {
             for (int j = 0; j < kernelHeight; j++) {
                 // the greyscale intensity of the pixel in question (each 8 bits is the same 255 colors)
                 int pixelIntensity = input.getRGB(x + i, y + j) & 255;
-                float kernelFactor = normalizedKernel[i][j];
+                double kernelFactor = normalizedKernel[i][j];
                 convolutedPixelValue += pixelIntensity * kernelFactor;
             }
         }
-        // the greyness of the output pixel
-        return Math.round(convolutedPixelValue) & 0xff;
+        // the greyness of the output pixel (cast to int is safe because of bitwise and)
+        return (int) Math.round(convolutedPixelValue) & 0xff;
     }
 }
