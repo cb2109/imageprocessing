@@ -49,6 +49,6 @@ public class RobertCrossEdgeTransformation implements ImageTransformation {
             }
         }
 
-        return transformation1;
+        return output;
     }
 }
