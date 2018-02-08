@@ -6,6 +6,7 @@ import org.testng.annotations.Test;
 import user.cb2109.imageprocessing.imageprocessing.TransformationSet;
 import user.cb2109.imageprocessing.imageprocessing.transformations.GaussianSmoothingTransformation;
 import user.cb2109.imageprocessing.imageprocessing.transformations.GreyscaleTransformation;
+import user.cb2109.imageprocessing.imageprocessing.transformations.RobertCrossEdgeTransformation;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -95,6 +96,26 @@ public class TransformationTest {
         set.add(new GaussianSmoothingTransformation());
         BufferedImage output = set.runChain(this.imgCamera);
         outputs.put("gaussianSmoothingCamera.jpg", output);
+    }
+
+    @Test
+    public void edgeAdjustedCamera() {
+        TransformationSet set = new TransformationSet();
+        set.add(new GreyscaleTransformation());
+        set.add(new GaussianSmoothingTransformation());
+        set.add(new RobertCrossEdgeTransformation());
+        BufferedImage output = set.runChain(this.imgCamera);
+        outputs.put("edgeAdjustedCamera.jpg", output);
+    }
+
+    @Test
+    public void edgeAdjustedBill() {
+        TransformationSet set = new TransformationSet();
+        set.add(new GreyscaleTransformation());
+        set.add(new GaussianSmoothingTransformation());
+        set.add(new RobertCrossEdgeTransformation());
+        BufferedImage output = set.runChain(this.imgBill);
+        outputs.put("edgeAdjustedBill.jpg", output);
     }
 
     @AfterClass
