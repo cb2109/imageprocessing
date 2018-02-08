@@ -10,17 +10,20 @@ import java.awt.image.BufferedImage;
  */
 public abstract class ConvolutionTransformation implements ImageTransformation {
 
+    protected abstract double[][] getKernel();
 
     @Override
     public BufferedImage transform(BufferedImage image) {
 
         int imgWidth = image.getWidth();
         int imgHeight = image.getHeight();
-        int kernelWidth = this.getKernelWidth();
+
+        double[][] kernel = getKernel();
+        int kernelWidth = kernel.length;
         if (kernelWidth == 0) {
             throw new ArrayIndexOutOfBoundsException("Zero sized kernel");
         }
-        int kernelHeight = this.getKernelHeight();
+        int kernelHeight = kernel[0].length;
 
         BufferedImage output = new BufferedImage(imgWidth, imgHeight, BufferedImage.TYPE_INT_RGB);
         // we have to make sure the kernel fits in each time we use it
@@ -44,9 +47,20 @@ public abstract class ConvolutionTransformation implements ImageTransformation {
         return output;
     }
 
-    protected abstract int getKernelHeight();
-
-    protected abstract int getKernelWidth();
-
-    protected abstract int calculateConvolutionIntensity(BufferedImage input, int x, int y);
+    protected int calculateConvolutionIntensity(BufferedImage input, int x, int y) {
+        double[][] kernel = getKernel();
+        int kernelWidth = kernel.length;
+        int kernelHeight = kernel[0].length;
+        double convolutedPixelValue = 0;
+        // sum across each element in the kernel
+        for (int i = 0; i < kernelWidth; i++) {
+            for (int j = 0; j < kernelHeight; j++) {
+                // the greyscale intensity of the pixel in question (each 8 bits is the same 255 colors)
+                int pixelIntensity = input.getRGB(x + i, y + j) & 0xff;
+                convolutedPixelValue += pixelIntensity * kernel[i][j];
+            }
+        }
+        // the greyness of the output pixel (cast to int is safe because of bitwise and)
+        return ((int) Math.round(Math.abs(convolutedPixelValue))) & 0xff;
+    }
 }

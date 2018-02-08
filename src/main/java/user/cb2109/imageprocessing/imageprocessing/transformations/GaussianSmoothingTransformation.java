@@ -1,7 +1,5 @@
 package user.cb2109.imageprocessing.imageprocessing.transformations;
 
-import java.awt.image.BufferedImage;
-
 /**
  * Author: Christopher Bates
  * Date: 31/01/2018
@@ -50,31 +48,7 @@ public class GaussianSmoothingTransformation extends ConvolutionTransformation {
     }
 
     @Override
-    protected int getKernelHeight() {
-        return this.normalizedKernel[0].length;
-    }
-
-    @Override
-    protected  int getKernelWidth() {
-        return this.normalizedKernel.length;
-    }
-
-    @Override
-    protected int calculateConvolutionIntensity(BufferedImage input, int x, int y) {
-
-        int kernelWidth = normalizedKernel.length;
-        int kernelHeight = normalizedKernel[0].length;
-        double convolutedPixelValue = 0;
-        // sum across each element in the kernel
-        for (int i = 0; i < kernelWidth; i++) {
-            for (int j = 0; j < kernelHeight; j++) {
-                // the greyscale intensity of the pixel in question (each 8 bits is the same 255 colors)
-                int pixelIntensity = input.getRGB(x + i, y + j) & 255;
-                double kernelFactor = normalizedKernel[i][j];
-                convolutedPixelValue += pixelIntensity * kernelFactor;
-            }
-        }
-        // the greyness of the output pixel (cast to int is safe because of bitwise and)
-        return (int) Math.round(convolutedPixelValue) & 0xff;
+    protected double[][] getKernel() {
+        return this.normalizedKernel;
     }
 }
